@@ -1,15 +1,25 @@
 import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Nav from "./componentsApp/Nav";
+import Footer from "./componentsApp/Footer";
 import Home from "./page/Home";
 import Signin from "./page/Signin";
 import Profil from "./page/Profil";
-
 import "./page/style.scss";
 
 function App() {
   return (
-    <div className="App">
-      <Home />
-    </div>
+    <Router>
+      <div className="App">
+        <Nav />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/profil" element={<Profil />} />
+        </Routes>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
