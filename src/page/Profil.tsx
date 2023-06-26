@@ -1,7 +1,8 @@
 import React from "react";
+import Main from "../componentProfilPage/Main";
 
 function Profil() {
-  return <div></div>;
+  return <Main />;
 }
 
 export default Profil;

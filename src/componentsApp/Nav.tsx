@@ -1,4 +1,9 @@
 import React from "react";
+import argentBankLogo from "../assets/argentBankLogo.png";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+library.add(faUserCircle);
 
 function Navigation() {
   return (
@@ -6,14 +11,14 @@ function Navigation() {
       <a className="main-nav-logo" href="./index.html">
         <img
           className="main-nav-logo-image"
-          src="./img/argentBankLogo.png"
+          src={argentBankLogo}
           alt="Argent Bank Logo"
         />
         <h1 className="sr-only">Argent Bank</h1>
       </a>
       <div>
         <a className="main-nav-item" href="./sign-in.html">
-          <i className="fa fa-user-circle"></i>
+          <FontAwesomeIcon icon="user-circle" />
           Sign In
         </a>
       </div>
