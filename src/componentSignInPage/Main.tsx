@@ -1,28 +1,63 @@
 import React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Main() {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const { username, password } = formData;
+
+  const onChange = (e: any) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+      [e.target.password]: e.target.value,
+    }));
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+  };
+
   return (
     <main className="main bg-dark">
       <section className="sign-in-content">
         <i className="fa fa-user-circle sign-in-icon"></i>
         <h1>Sign In</h1>
-        <form>
+        <form onSubmit={onSubmit}>
           <div className="input-wrapper">
             <label htmlFor="username">Username</label>
-            <input type="text" id="username" />
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={username}
+              placeholder="nom d'utilisateur"
+              onChange={onChange}
+            />
           </div>
           <div className="input-wrapper">
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={password}
+              placeholder="mot de passe"
+              onChange={onChange}
+            />
           </div>
           <div className="input-remember">
             <input type="checkbox" id="remember-me" />
             <label htmlFor="remember-me">Remember me</label>
           </div>
-          <Link to="/profil" className="sign-in-button">
-            Sign In
-          </Link>
+
+          <button className="sign-in-button" type="submit">
+            <Link to="/profil">Sign In</Link>
+          </button>
         </form>
       </section>
     </main>
