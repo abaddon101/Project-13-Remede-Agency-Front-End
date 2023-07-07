@@ -2,20 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import store from "./features/store/store";
 
 // REDUX
 import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./features/reducers";
-import { getPost } from "./features/actions/user.action";
-// import { getUser } from "./actions/user.action";
-
-const store = configureStore({
-  reducer: rootReducer,
-  devTools: true,
-});
-
-store.dispatch(getPost());
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

@@ -1,25 +1,29 @@
 import React from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { login } from "../features/reducers/authLoginSlice";
+// import { getToken } from "../features/actions/post.action";
 
 function Main() {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
 
-  const { username, password } = formData;
+  const { email, password } = formData;
 
   const onChange = (e: any) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
-      [e.target.password]: e.target.value,
     }));
   };
 
   const onSubmit = (e: any) => {
     e.preventDefault();
+    dispatch(login(formData));
   };
 
   return (
@@ -29,12 +33,12 @@ function Main() {
         <h1>Sign In</h1>
         <form onSubmit={onSubmit}>
           <div className="input-wrapper">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">email</label>
             <input
               type="text"
-              id="username"
-              name="username"
-              value={username}
+              id="email"
+              name="email"
+              value={email}
               placeholder="nom d'utilisateur"
               onChange={onChange}
             />
@@ -56,7 +60,9 @@ function Main() {
           </div>
 
           <button className="sign-in-button" type="submit">
-            <Link to="/profil">Sign In</Link>
+            {/* <Link to="/profil"> */}
+            Sign In
+            {/* </Link> */}
           </button>
         </form>
       </section>
