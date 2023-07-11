@@ -1,18 +1,33 @@
 import React from "react";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { login } from "../features/reducers/authLoginSlice";
+import { RootState } from "../features/store/store";
 // import { getToken } from "../features/actions/post.action";
+// console.log(login);
 
 function Main() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const [selectedUserId, setSelectedUserId] = useState("");
+
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
   const { email, password } = formData;
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/profil"); // Redirige l'utilisateur vers la page de profil
+    }
+  }, [isAuthenticated, navigate]);
 
   const onChange = (e: any) => {
     setFormData((prevState) => ({
@@ -21,9 +36,16 @@ function Main() {
     }));
   };
 
-  const onSubmit = (e: any) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(login(formData));
+    try {
+      await dispatch(login(formData)); // Passer formData comme argument
+      // Connexion réussie, redirige l'utilisateur vers la page de profil
+      navigate(`/profil/`);
+    } catch (error) {
+      // Connexion échouée, gérer l'erreur
+      console.log("connection échouée");
+    }
   };
 
   return (
