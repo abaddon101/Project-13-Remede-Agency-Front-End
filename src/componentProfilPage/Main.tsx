@@ -1,6 +1,10 @@
 import React from "react";
-
+// recupérer le token dans le main
+// afin de choper le name en fonction du token pour le name du edit name
+// voir comment modifier le name sans caser le code
 function Main() {
+  // console.log();
+
   return (
     <main className="main bg-dark">
       <div className="header">
@@ -8,7 +12,7 @@ function Main() {
           Welcome back
           <br />
         </h1>
-        <button className="edit-button">Edit Name</button>
+        <button className="edit-button">Edit Name </button>
 
         <section className="account">
           <div className="account-content-wrapper">

@@ -1,8 +1,7 @@
 import React from "react";
-import Main from "../componentSignInPage/Main";
-
+import FormSignin from "../componentSignInPage/FormSiginComponent";
 function Signin() {
-  return <Main />;
+  return <FormSignin />;
 }
 
 export default Signin;

@@ -1,12 +1,29 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import argentBankLogo from "../assets/argentBankLogo.png";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-library.add(faUserCircle);
+import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { RootState } from "../features/store/store";
+import { logout } from "../features/reducers/authLoginSlice";
 
 function Navigation() {
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+  const isLoginSuccess = useSelector(
+    (state: RootState) => state.auth.loginSuccess
+  );
+
+  console.log("isAuthenticated:", isAuthenticated);
+
+  const dispatch = useDispatch();
+
+  const handleSignOut = () => {
+    // Dispatchez l'action de déconnexion
+    dispatch(logout());
+  };
+
   return (
     <nav className="main-nav">
       <Link to="/" className="main-nav-logo">
@@ -17,11 +34,18 @@ function Navigation() {
         />
         <h1 className="sr-only">Argent Bank</h1>
       </Link>
-      <div>
-        <Link to="/signin" className="main-nav-item">
-          <FontAwesomeIcon icon="user-circle" />
-          Sign In
-        </Link>
+      <div className="LinksInAndOut">
+        {isAuthenticated ? (
+          <Link to="/" onClick={handleSignOut} className="main-nav-item">
+            <FontAwesomeIcon icon={faUserCircle} />
+            Sign Out
+          </Link>
+        ) : (
+          <Link to="/signin" className="main-nav-item">
+            <FontAwesomeIcon icon={faUserCircle} />
+            Sign In
+          </Link>
+        )}
       </div>
     </nav>
   );
