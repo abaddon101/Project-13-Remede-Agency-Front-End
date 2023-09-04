@@ -1,4 +1,10 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  combineReducers,
+  ThunkAction,
+  Action,
+} from "@reduxjs/toolkit";
+
 import authLoginSlice from "../reducers/authLoginSlice";
 
 const rootReducer = combineReducers({
@@ -6,10 +12,16 @@ const rootReducer = combineReducers({
   // Ajoutez ici d'autres tranches de votre store Redux
 });
 
-export type RootState = ReturnType<typeof rootReducer>;
-
-
-export default configureStore({
+export const store = configureStore({
   reducer: rootReducer,
   devTools: true,
 });
+
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;

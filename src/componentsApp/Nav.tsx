@@ -11,14 +11,8 @@ function Navigation() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
-  const isLoginSuccess = useSelector(
-    (state: RootState) => state.auth.loginSuccess
-  );
-
-  console.log("isAuthenticated:", isAuthenticated);
-
+  // console.log("isAuthenticated:", isAuthenticated);
   const dispatch = useDispatch();
-
   const handleSignOut = () => {
     // Dispatchez l'action de déconnexion
     dispatch(logout());

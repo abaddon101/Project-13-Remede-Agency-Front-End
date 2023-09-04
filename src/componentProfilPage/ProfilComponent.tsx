@@ -1,9 +1,20 @@
-import React from "react";
-// recupérer le token dans le main
-// afin de choper le name en fonction du token pour le name du edit name
-// voir comment modifier le name sans caser le code
-function Main() {
-  // console.log();
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../features/store/store";
+
+function ProfilComponent() {
+  // const dispatch = useDispatch();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+  const firstName = useSelector((state: RootState) => state.auth.firstName);
+  const lastName = useSelector((state: RootState) => state.auth.lastName);
+  const token = useSelector((state: RootState) => state.auth.token);
+
+  console.log("isAuthenticated:", isAuthenticated);
+  console.log("firstName:", firstName);
+  // console.log("lastName:", lastName);
+  console.log("token:", token);
 
   return (
     <main className="main bg-dark">
@@ -11,6 +22,7 @@ function Main() {
         <h1>
           Welcome back
           <br />
+          {isAuthenticated ? `${firstName} ${lastName}` : "Loading..."}
         </h1>
         <button className="edit-button">Edit Name </button>
 
@@ -49,4 +61,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default ProfilComponent;

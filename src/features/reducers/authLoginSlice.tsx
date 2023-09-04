@@ -1,141 +1,135 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Fonction utilitaire pour effectuer la vérification côté serveur
-async function checkCredentials(email: string, password: string) {
-  try {
-    // Effectuer l'appel API pour vérifier les identifiants côté serveur
-    const response = await axios.post(
-      "http://localhost:3001/api/v1/user/login",
-      { email, password }
-    );
-    // Log pour afficher la réponse de l'API côté serveur (facultatif, pour le débogage)
-    console.log("Réponse de l'API côté serveur:", response.data);
-    // Retourner true si l'authentification réussit
-    return response.data.success;
-  } catch (error) {
-    console.log("Erreur lors de la vérification des identifiants:", error);
-    return false;
-  }
+export interface UserProfileData {
+  firstName: string;
+  lastName: string;
+  // Ajoutez d'autres propriétés si nécessaire
 }
-// Appel asynchrone pour la connexion
+
 export const loginAsync = createAsyncThunk(
   "auth/loginAsync",
   async ({ email, password }: { email: string; password: string }) => {
-    const isAuthenticated = await checkCredentials(email, password);
-    if (isAuthenticated) {
-      return { isAuthenticated };
-    } else {
-      throw new Error("Failed to authenticate");
+    console.log("loginAsync is called", email); // Ajout de ce log
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/v1/user/login",
+        { email, password }
+      );
+      console.log("loginAsync is called and has good response:", response);
+      if (response.data.body) {
+        const { token, firstName, lastName } = response.data.body;
+        console.log("Token:", token);
+        console.log("FirstName:", firstName);
+        console.log("LastName:", lastName);
+        localStorage.setItem("token", token);
+        return { token, firstName, lastName };
+      } else {
+        throw new Error("Authentication failed");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      throw error;
+    }
+  }
+);
+
+export const fetchUserProfile = createAsyncThunk(
+  "auth/fetchUserProfile",
+  async (token: string) => {
+    console.log("fetchUserProfile is called and has the token", token);
+    try {
+      const profileResponse = await axios.post(
+        "http://localhost:3001/api/v1/user/profile",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (profileResponse.data) {
+        const { token, firstName, lastName } = profileResponse.data.body;
+        console.log("Token:", token);
+        console.log("FirstName:", firstName);
+        console.log("LastName:", lastName);
+        return profileResponse.data.body;
+      } else {
+        throw new Error("Failed to fetch user profile");
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      throw error;
     }
   }
 );
 
 // Slice Redux pour l'authentification
-export const authLoginSlice = createSlice({
-  name: "auth",
+export const loginSlice = createSlice({
+  name: "authentification",
   initialState: {
+    loginSuccess: false,
     email: "string",
     password: "string",
     isAuthenticated: false,
-    user: null,
-    error: null,
-    redirectToProfil: false,
-    userId: "",
-    loginSuccess: false,
+    token: localStorage.getItem("token") || "",
+    userId: localStorage.getItem("userId") || "",
+    firstName: localStorage.getItem("firstName") || "",
+    lastName: localStorage.getItem("lastName") || "",
+    error: "",
   },
   reducers: {
     login: (state, action) => {
-      // console.log(action);
-
-      axios
-        .post("http://localhost:3001/api/v1/user/login", action.payload)
-        .then((res) => {
-          // console.log(res);
-          // Dispatch loginSuccess avec les données de l'utilisateur en payload
-          // console.log(res.data.body.token);
-          // console.log(res.data.body);
-          // Enregistrer le token dans le stockage local
-          localStorage.setItem("token", res.data.body.token);
-
-          // Récupérer le token du stockage local
-          const token = localStorage.getItem("token");
-          console.log(token);
-
-          // Utiliser le token pour effectuer une requête authentifiée
-          axios
-            .post(
-              "http://localhost:3001/api/v1/user/profile",
-              {},
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            )
-            .then((profileRes) => {
-              // Accéder à l'ID de l'utilisateur à partir de la réponse
-              const userId = profileRes.data.body.id;
-              console.log(userId);
-
-              // Mettre à jour l'état d'authentification
-              state.isAuthenticated = true;
-              state.loginSuccess = true;
-            })
-            .catch((error: any) => {
-              console.log("connection échouée");
-            });
-        });
-      // .catch((error: any) => {
-      //   console.log("connection échouée");
-      // });
+      console.log(state);
+      console.log();
     },
+
     loginSuccess: (state, action) => {
-      console.log("loginSuccess action is dispatched");
-      state.isAuthenticated = true;
+      console.log("loginSuccess action is dispatched", state);
       state.loginSuccess = true;
-      state.user = action.payload;
-      state.userId = action.payload.id;
-      state.error = null;
+      state.isAuthenticated = true;
+      localStorage.setItem("firstName", action.payload.firstName);
+      localStorage.setItem("lastName", action.payload.lastName);
+      state.token = action.payload.token;
+      state.userId = action.payload.userId; // Assurez-vous d'ajouter userId
+      // console.log("state:", state);
+      // console.log("action:", action);
     },
-    redirectToProfil: (state) => {
-      state.redirectToProfil = true;
-    },
-    loginFailure: (state, action) => {
+    loginFail: (state, { payload }) => {
       state.isAuthenticated = false;
-      state.user = null;
-      state.error = action.payload;
+      state.loginSuccess = false;
+      state.error = payload;
     },
     logout: (state) => {
       console.log("logout action is dispatched");
       state.isAuthenticated = false;
-      state.loginSuccess = true;
-      state.user = null;
-      state.error = null;
-    },
-    test: (state) => {
-      console.log("test");
+      state.loginSuccess = false;
+      state.firstName = "";
+      state.lastName = "";
+      state.token = "";
     },
   },
+  // ...
   extraReducers: (builder) => {
     builder.addCase(loginAsync.fulfilled, (state, action) => {
-      console.log("loginAsync fulfilled is dispatched");
-      state.isAuthenticated = action.payload.isAuthenticated;
-      state.loginSuccess = action.payload.isAuthenticated;
+      const { token, firstName, lastName } = action.payload;
+      state.isAuthenticated = true;
+      state.token = token;
+      state.firstName = firstName;
+      state.lastName = lastName;
     });
-    builder.addCase(loginAsync.rejected, (state) => {
-      console.log("loginAsync rejected is dispatched");
-      state.isAuthenticated = false;
-      state.loginSuccess = false;
+
+    builder.addCase(fetchUserProfile.fulfilled, (state, action) => {
+      const { firstName, lastName } = action.payload;
+      state.firstName = firstName;
+      state.lastName = lastName;
+      // You might also want to set other relevant profile data in the state here
     });
   },
+
+  // ...
 });
-export const {
-  loginSuccess,
-  loginFailure,
-  logout,
-  test,
-  login,
-  redirectToProfil,
-} = authLoginSlice.actions;
-export default authLoginSlice.reducer;
+
+export const { login, loginSuccess, loginFail, logout } = loginSlice.actions;
+export default loginSlice.reducer;

@@ -4,10 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { login } from "../features/reducers/authLoginSlice";
 import { loginSuccess } from "../features/reducers/authLoginSlice";
-import { RootState } from "../features/store/store";
+import { RootState, AppDispatch } from "../features/store/store";
+import {
+  loginAsync,
+  fetchUserProfile,
+} from "../features/reducers/authLoginSlice";
 
 function FormSignin() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>() as any;
   const navigate = useNavigate();
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -50,10 +54,12 @@ function FormSignin() {
 
     try {
       setFormIsValid(true);
-      const response = await dispatch(login(formData)); // Appel à l'API via redux
+      const loginResponse = await dispatch(loginAsync({ email, password })); // Appel à l'API via redux
+      console.log("Login Response:", loginResponse.payload);
 
       // Vérifier si l'authentification a réussi ou non en vérifiant la réponse de l'API
-      if (response.payload && response.payload.error) {
+      if (loginResponse.payload && loginResponse.payload.error) {
+        console.log("Authentication Error:", loginResponse.payload.error);
         // Authentification échouée, afficher l'erreur
         console.log(
           "La connexion a échoué. Veuillez vérifier votre email et mot de passe."
@@ -63,13 +69,29 @@ function FormSignin() {
         );
         setFormIsValid(false);
       } else {
+        const token = localStorage.getItem("token") ?? "";
+        console.log("Profile Response Token:", token);
+        // Appel à fetchUserProfile pour obtenir les données du profil
+        const profileResponse = await dispatch(fetchUserProfile(token));
+        console.log("Profile Response:", profileResponse);
         // Authentification réussie, redirige l'utilisateur vers la page de profil
-        dispatch(loginSuccess(response.payload)); // Dispatch de l'action loginSuccess avec les données de l'utilisateur
+        dispatch(
+          loginSuccess({
+            token: loginResponse.payload.token,
+            userId: loginResponse.payload.userId, // Ajouter l'userId
+            firstName: loginResponse.payload.firstName,
+            lastName: loginResponse.payload.lastName,
+          })
+        );
+
+        console.log(loginResponse.payload);
+
+        // Dispatch de l'action loginSuccess avec les données de l'utilisateur
         navigate(`/profil/`);
       }
     } catch (error) {
       // Gérer les erreurs ici
-      console.log("Erreur lors de la connexion:", error);
+      console.log("Error in onSubmit:", error);
     }
   };
 
