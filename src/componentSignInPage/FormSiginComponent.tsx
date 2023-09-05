@@ -24,6 +24,7 @@ function FormSignin() {
 
   const [formIsValid, setFormIsValid] = useState(true);
   const [loginError, setLoginError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { email, password } = formData;
 
@@ -32,6 +33,22 @@ function FormSignin() {
       ...prevState,
       [e.target.name]: e.target.value,
     }));
+  };
+
+  const handleRememberMeChange = () => {
+    setRememberMe(!rememberMe);
+
+    if (!rememberMe) {
+      // Si la case "Remember Me" est cochée, stockez l'information dans le localStorage
+      localStorage.setItem("rememberMe", "true");
+      localStorage.setItem("email", email);
+
+      // Stockez également l'e-mail
+    } else {
+      // Si la case "Remember Me" est décochée, supprimez l'information du localStorage
+      localStorage.removeItem("rememberMe");
+      localStorage.removeItem("email"); // Supprimez également l'e-mail
+    }
   };
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -70,17 +87,22 @@ function FormSignin() {
         setFormIsValid(false);
       } else {
         const token = localStorage.getItem("token") ?? "";
+
         console.log("Profile Response Token:", token);
+
         // Appel à fetchUserProfile pour obtenir les données du profil
         const profileResponse = await dispatch(fetchUserProfile(token));
-        console.log("Profile Response:", profileResponse);
+        // Stocker les données dans le localStorage
+        localStorage.setItem("firstName", profileResponse.firstName);
+        localStorage.setItem("lastName", profileResponse.lastName);
+        // console.log("Profile Response:", profileResponse);
         // Authentification réussie, redirige l'utilisateur vers la page de profil
         dispatch(
           loginSuccess({
             token: loginResponse.payload.token,
-            userId: loginResponse.payload.userId, // Ajouter l'userId
-            firstName: loginResponse.payload.firstName,
-            lastName: loginResponse.payload.lastName,
+            userId: profileResponse.payload.userId, // Ajouter l'userId
+            firstName: profileResponse.payload.firstName,
+            lastName: profileResponse.payload.lastName,
           })
         );
 
@@ -94,6 +116,27 @@ function FormSignin() {
       console.log("Error in onSubmit:", error);
     }
   };
+  useEffect(() => {
+    const rememberMeValue = localStorage.getItem("rememberMe");
+    const storedEmail = localStorage.getItem("email");
+    // const storedFirstName = localStorage.getItem("firstName");
+    // const storedLastName = localStorage.getItem("lastName");
+
+    if (
+      rememberMeValue === "true" &&
+      storedEmail
+      // storedFirstName &&
+      // storedLastName
+    ) {
+      setRememberMe(true);
+      setFormData({
+        ...formData,
+        email: storedEmail,
+        // firstName: storedFirstName,
+        // lastName: storedLastName,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -102,6 +145,7 @@ function FormSignin() {
   }, [isAuthenticated, navigate]);
 
   console.log("isAuthenticated:", isAuthenticated);
+  console.log("rememberMe:", rememberMe);
 
   return (
     <main className="main bg-dark">
@@ -132,7 +176,12 @@ function FormSignin() {
             />
           </div>
           <div className="input-remember">
-            <input type="checkbox" id="remember-me" />
+            <input
+              type="checkbox"
+              id="remember-me"
+              checked={rememberMe}
+              onChange={handleRememberMeChange}
+            />
             <label htmlFor="remember-me">Remember me</label>
           </div>
 

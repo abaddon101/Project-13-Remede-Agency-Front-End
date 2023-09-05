@@ -18,12 +18,12 @@ export const loginAsync = createAsyncThunk(
       );
       console.log("loginAsync is called and has good response:", response);
       if (response.data.body) {
-        const { token, firstName, lastName } = response.data.body;
+        const { token } = response.data.body;
         console.log("Token:", token);
-        console.log("FirstName:", firstName);
-        console.log("LastName:", lastName);
+        // console.log("FirstName:", firstName);
+        // console.log("LastName:", lastName);
         localStorage.setItem("token", token);
-        return { token, firstName, lastName };
+        return { token };
       } else {
         throw new Error("Authentication failed");
       }
@@ -52,8 +52,10 @@ export const fetchUserProfile = createAsyncThunk(
       if (profileResponse.data) {
         const { token, firstName, lastName } = profileResponse.data.body;
         console.log("Token:", token);
-        console.log("FirstName:", firstName);
-        console.log("LastName:", lastName);
+        console.log("response from user/profil:", firstName);
+        console.log("response from user/profil:", lastName);
+        localStorage.setItem("firstName", firstName);
+        localStorage.setItem("lastName", lastName);
         return profileResponse.data.body;
       } else {
         throw new Error("Failed to fetch user profile");
@@ -72,7 +74,7 @@ export const loginSlice = createSlice({
     loginSuccess: false,
     email: "string",
     password: "string",
-    isAuthenticated: false,
+    isAuthenticated: !!localStorage.getItem("token"), // Met à jour isAuthenticated à partir du local storage
     token: localStorage.getItem("token") || "",
     userId: localStorage.getItem("userId") || "",
     firstName: localStorage.getItem("firstName") || "",
@@ -86,13 +88,16 @@ export const loginSlice = createSlice({
     },
 
     loginSuccess: (state, action) => {
-      console.log("loginSuccess action is dispatched", state);
+      // console.log("loginSuccess action is dispatched", state);
       state.loginSuccess = true;
-      state.isAuthenticated = true;
+
       localStorage.setItem("firstName", action.payload.firstName);
       localStorage.setItem("lastName", action.payload.lastName);
+      localStorage.setItem("token", action.payload.token);
+      state.isAuthenticated = true;
       state.token = action.payload.token;
       state.userId = action.payload.userId; // Assurez-vous d'ajouter userId
+
       // console.log("state:", state);
       // console.log("action:", action);
     },
@@ -102,7 +107,8 @@ export const loginSlice = createSlice({
       state.error = payload;
     },
     logout: (state) => {
-      console.log("logout action is dispatched");
+      // console.log("logout action is dispatched");
+      localStorage.removeItem("token"); // Supprime le jeton du local storage
       state.isAuthenticated = false;
       state.loginSuccess = false;
       state.firstName = "";
@@ -113,11 +119,11 @@ export const loginSlice = createSlice({
   // ...
   extraReducers: (builder) => {
     builder.addCase(loginAsync.fulfilled, (state, action) => {
-      const { token, firstName, lastName } = action.payload;
+      const { token } = action.payload;
       state.isAuthenticated = true;
       state.token = token;
-      state.firstName = firstName;
-      state.lastName = lastName;
+      // state.firstName = firstName;
+      // state.lastName = lastName;
     });
 
     builder.addCase(fetchUserProfile.fulfilled, (state, action) => {

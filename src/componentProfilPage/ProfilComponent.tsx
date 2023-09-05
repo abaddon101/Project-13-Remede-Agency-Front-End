@@ -7,14 +7,15 @@ function ProfilComponent() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
+
   const firstName = useSelector((state: RootState) => state.auth.firstName);
   const lastName = useSelector((state: RootState) => state.auth.lastName);
   const token = useSelector((state: RootState) => state.auth.token);
 
-  console.log("isAuthenticated:", isAuthenticated);
-  console.log("firstName:", firstName);
-  // console.log("lastName:", lastName);
-  console.log("token:", token);
+  console.log("isAuthenticated called in ProfilComponent:", isAuthenticated);
+  console.log("firstName called in ProfilComponent:", firstName);
+  console.log("lastName called in ProfilComponent:", lastName);
+  console.log("token called in ProfilComponent:", token);
 
   return (
     <main className="main bg-dark">
