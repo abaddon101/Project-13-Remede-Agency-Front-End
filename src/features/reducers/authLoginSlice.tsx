@@ -90,11 +90,10 @@ export const loginSlice = createSlice({
     loginSuccess: (state, action) => {
       // console.log("loginSuccess action is dispatched", state);
       state.loginSuccess = true;
-
+      
       localStorage.setItem("firstName", action.payload.firstName);
       localStorage.setItem("lastName", action.payload.lastName);
       localStorage.setItem("token", action.payload.token);
-      state.isAuthenticated = true;
       state.token = action.payload.token;
       state.userId = action.payload.userId; // Assurez-vous d'ajouter userId
 
@@ -108,7 +107,6 @@ export const loginSlice = createSlice({
     },
     logout: (state) => {
       // console.log("logout action is dispatched");
-      localStorage.removeItem("token"); // Supprime le jeton du local storage
       state.isAuthenticated = false;
       state.loginSuccess = false;
       state.firstName = "";

@@ -1,31 +1,101 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../features/store/store";
+import { RootState, AppDispatch } from "../features/store/store";
+import { fetchUserProfile } from "../features/reducers/authLoginSlice";
+import axios from "axios";
 
 function ProfilComponent() {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>() as any;
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedFirstName, setEditedFirstName] = useState("");
+  const [editedLastName, setEditedLastName] = useState("");
 
   const firstName = useSelector((state: RootState) => state.auth.firstName);
   const lastName = useSelector((state: RootState) => state.auth.lastName);
   const token = useSelector((state: RootState) => state.auth.token);
 
-  console.log("isAuthenticated called in ProfilComponent:", isAuthenticated);
-  console.log("firstName called in ProfilComponent:", firstName);
-  console.log("lastName called in ProfilComponent:", lastName);
-  console.log("token called in ProfilComponent:", token);
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name === "editedFirstName") {
+      setEditedFirstName(e.target.value);
+    } else if (e.target.name === "editedLastName") {
+      setEditedLastName(e.target.value);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Envoyer une requête à l'API Swagger pour mettre à jour le nom
+    try {
+      const updatedData = {
+        firstName: editedFirstName,
+        lastName: editedLastName,
+      };
+
+      // Envoyer la requête de mise à jour avec le token d'authentification
+      const response = await axios.put(
+        "http://localhost:3001/api/v1/user/profile",
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Vérifier la réponse de l'API et mettre à jour le nom localement si la modification réussit
+      if (response.status === 200) {
+        // Mise à jour locale des données du profil
+        dispatch(fetchUserProfile(token)); // Cela devrait mettre à jour firstName et lastName dans le Redux store
+
+        // Désactiver le mode d'édition
+        setIsEditing(false);
+      } else {
+        // Gérer les erreurs de modification ici
+        console.error("Error updating profile:", response);
+      }
+    } catch (error) {
+      // Gérer les erreurs d'exception ici
+      console.error("Error updating profile:", error);
+    }
+  };
 
   return (
     <main className="main bg-dark">
       <div className="header">
-        <h1>
-          Welcome back
-          <br />
-          {isAuthenticated ? `${firstName} ${lastName}` : "Loading..."}
-        </h1>
-        <button className="edit-button">Edit Name </button>
+        {isEditing ? (
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="editedFirstName"
+              value={editedFirstName}
+              onChange={handleInputChange}
+            />
+            <input
+              type="text"
+              name="editedLastName"
+              value={editedLastName}
+              onChange={handleInputChange}
+            />
+            <button type="submit">Save</button>
+          </form>
+        ) : (
+          <h1>
+            Welcome back
+            <br />
+            {isAuthenticated ? `${firstName} ${lastName}` : "Loading..."}
+          </h1>
+        )}
+        <button className="edit-button" onClick={handleEditClick}>
+          Edit Name
+        </button>
 
         <section className="account">
           <div className="account-content-wrapper">
