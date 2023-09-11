@@ -12,13 +12,23 @@ function ProfilComponent() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedFirstName, setEditedFirstName] = useState("");
   const [editedLastName, setEditedLastName] = useState("");
-
+  const [isEditButtonEnabled, setIsEditButtonEnabled] = useState(true);
   const firstName = useSelector((state: RootState) => state.auth.firstName);
   const lastName = useSelector((state: RootState) => state.auth.lastName);
   const token = useSelector((state: RootState) => state.auth.token);
 
   const handleEditClick = () => {
+    console.log("Edit button clicked");
     setIsEditing(true);
+    setIsEditButtonEnabled(false);
+  };
+  const handleCancelClick = () => {
+    // Réinitialiser les champs édités aux valeurs actuelles de firstName et lastName
+    setEditedFirstName(firstName);
+    setEditedLastName(lastName);
+
+    // Désactiver le mode d'édition
+    setIsEditing(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,8 +65,18 @@ function ProfilComponent() {
         // Mise à jour locale des données du profil
         dispatch(fetchUserProfile(token)); // Cela devrait mettre à jour firstName et lastName dans le Redux store
 
+        // Réinitialisez également les valeurs dans le localStorage
+        localStorage.setItem("firstName", editedFirstName);
+        localStorage.setItem("lastName", editedLastName);
+
         // Désactiver le mode d'édition
         setIsEditing(false);
+        // Ajoutez des déclarations console.log pour le débogage
+        console.log(
+          "LocalStorage firstName:",
+          localStorage.getItem("firstName")
+        );
+        console.log("LocalStorage lastName:", localStorage.getItem("lastName"));
       } else {
         // Gérer les erreurs de modification ici
         console.error("Error updating profile:", response);
@@ -71,31 +91,54 @@ function ProfilComponent() {
     <main className="main bg-dark">
       <div className="header">
         {isEditing ? (
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="editedFirstName"
-              value={editedFirstName}
-              onChange={handleInputChange}
-            />
-            <input
-              type="text"
-              name="editedLastName"
-              value={editedLastName}
-              onChange={handleInputChange}
-            />
-            <button type="submit">Save</button>
+          <form className="form-editing-grid" onSubmit={handleSubmit}>
+            <div className="input-wrapper">
+              <input
+                type="text"
+                name="editedFirstName"
+                value={editedFirstName}
+                onChange={handleInputChange}
+                className="custom-input"
+              />
+
+              <input
+                type="text"
+                name="editedLastName"
+                value={editedLastName}
+                onChange={handleInputChange}
+                className="custom-input"
+              />
+            </div>
+            <div className="button-group">
+              <button className="save-button" type="submit">
+                Save
+              </button>
+              <button
+                className="cancel-button"
+                type="button"
+                onClick={handleCancelClick}
+              >
+                Cancel
+              </button>
+            </div>
           </form>
         ) : (
-          <h1>
-            Welcome back
-            <br />
-            {isAuthenticated ? `${firstName} ${lastName}` : "Loading..."}
-          </h1>
+          <div>
+            <h1>
+              Welcome back
+              <br />
+              {isAuthenticated ? `${firstName} ${lastName}` : "Loading..."}
+            </h1>
+
+            <button
+              className="edit-button"
+              onClick={handleEditClick}
+              disabled={isEditing}
+            >
+              Edit Name
+            </button>
+          </div>
         )}
-        <button className="edit-button" onClick={handleEditClick}>
-          Edit Name
-        </button>
 
         <section className="account">
           <div className="account-content-wrapper">

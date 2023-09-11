@@ -1,12 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export interface UserProfileData {
-  firstName: string;
-  lastName: string;
-  // Ajoutez d'autres propriétés si nécessaire
-}
-
 export const loginAsync = createAsyncThunk(
   "auth/loginAsync",
   async ({ email, password }: { email: string; password: string }) => {
@@ -51,7 +45,7 @@ export const fetchUserProfile = createAsyncThunk(
 
       if (profileResponse.data) {
         const { token, firstName, lastName } = profileResponse.data.body;
-        console.log("Token:", token);
+        // console.log("Token:", token);
         console.log("response from user/profil:", firstName);
         console.log("response from user/profil:", lastName);
         localStorage.setItem("firstName", firstName);
@@ -62,6 +56,44 @@ export const fetchUserProfile = createAsyncThunk(
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
+      throw error;
+    }
+  }
+);
+// fonction pour reset les données utlisateurs
+export const logoutAndClearUserData = createAsyncThunk(
+  "auth/logoutAndClearUserData",
+  async () => {
+    try {
+      // Simulez la déconnexion en appelant loginAsync avec des valeurs vides
+      const response = await axios.post(
+        "http://localhost:3001/api/v1/user/login",
+        { email: "", password: "" }
+      );
+
+      if (response.data.body) {
+        const { token } = response.data.body;
+        localStorage.setItem("token", token);
+
+        // Utilisez fetchUserProfile pour réinitialiser les données de l'utilisateur
+        const profileResponse = await axios.post(
+          "http://localhost:3001/api/v1/user/profile",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (profileResponse.data) {
+          const { firstName, lastName } = profileResponse.data.body;
+          localStorage.setItem("firstName", firstName);
+          localStorage.setItem("lastName", lastName);
+        }
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
       throw error;
     }
   }
@@ -90,7 +122,7 @@ export const loginSlice = createSlice({
     loginSuccess: (state, action) => {
       // console.log("loginSuccess action is dispatched", state);
       state.loginSuccess = true;
-      
+
       localStorage.setItem("firstName", action.payload.firstName);
       localStorage.setItem("lastName", action.payload.lastName);
       localStorage.setItem("token", action.payload.token);
@@ -106,12 +138,16 @@ export const loginSlice = createSlice({
       state.error = payload;
     },
     logout: (state) => {
-      // console.log("logout action is dispatched");
+      // Réinitialisez les valeurs avec les valeurs par défaut
       state.isAuthenticated = false;
       state.loginSuccess = false;
       state.firstName = "";
       state.lastName = "";
       state.token = "";
+      // Réinitialisez également les valeurs dans le localStorage
+      localStorage.removeItem("firstName");
+      localStorage.removeItem("lastName");
+      localStorage.removeItem("token");
     },
   },
   // ...
@@ -129,6 +165,10 @@ export const loginSlice = createSlice({
       state.firstName = firstName;
       state.lastName = lastName;
       // You might also want to set other relevant profile data in the state here
+    });
+    builder.addCase(logoutAndClearUserData.fulfilled, (state, action) => {
+      // Les données de l'utilisateur ont été réinitialisées lors de la déconnexion
+      // Vous pouvez ajouter d'autres manipulations d'état ici si nécessaire
     });
   },
 

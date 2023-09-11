@@ -72,7 +72,7 @@ function FormSignin() {
     try {
       setFormIsValid(true);
       const loginResponse = await dispatch(loginAsync({ email, password })); // Appel à l'API via redux
-      console.log("Login Response:", loginResponse.payload);
+      // console.log("Login Response:", loginResponse.payload);
 
       // Vérifier si l'authentification a réussi ou non en vérifiant la réponse de l'API
       if (loginResponse.payload && loginResponse.payload.error) {
@@ -88,7 +88,7 @@ function FormSignin() {
       } else {
         const token = localStorage.getItem("token") ?? "";
 
-        console.log("Profile Response Token:", token);
+        // console.log("Profile Response Token:", token);
 
         // Appel à fetchUserProfile pour obtenir les données du profil
         const profileResponse = await dispatch(fetchUserProfile(token));

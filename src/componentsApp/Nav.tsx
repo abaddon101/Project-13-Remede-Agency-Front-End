@@ -4,15 +4,16 @@ import { useSelector, useDispatch } from "react-redux";
 import argentBankLogo from "../assets/argentBankLogo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
-import { RootState } from "../features/store/store";
+import { RootState, AppDispatch } from "../features/store/store";
 import { logout } from "../features/reducers/authLoginSlice";
+import { logoutAndClearUserData } from "../features/reducers/authLoginSlice";
 
 function Navigation() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
   // console.log("isAuthenticated:", isAuthenticated);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>() as any;
   const handleSignOut = () => {
     // Dispatchez l'action de déconnexion
     dispatch(logout());
