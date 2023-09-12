@@ -71,9 +71,22 @@ body {
   width: 200px;
 }
 
-.form-sign-in {
- 
+.LinksInAndOut {
+  width: 18%;
+  .LinksInAndOut-first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+  .LinksInAndOut-second-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+svg{}
+
 }
+
 .hero {
   background-image: url("../assets/bankTree.jpeg");
   background-position: 0 -50px;
@@ -117,7 +130,6 @@ body {
   gap: 15px;
 }
 
-
 .input-remember-signin {
   display: flex;
 }
@@ -141,13 +153,6 @@ body {
   padding: 5px;
   font-size: 1.2rem;
 }
-
-
-
-
-
-
-
 
 .input-wrapper {
   display: flex;
@@ -277,6 +282,7 @@ body {
 
 .sign-in-icon {
   font-size: 5rem;
+
 }
 
 .input-remember {
