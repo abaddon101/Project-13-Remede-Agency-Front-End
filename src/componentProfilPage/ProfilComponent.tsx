@@ -90,6 +90,16 @@ function ProfilComponent() {
   return (
     <main className="main bg-dark">
       <div className="header">
+        <div>
+          <h1 className="profil-h1">Welcome back</h1>
+          <h2
+            className={
+              !isEditing && isAuthenticated ? "active-name" : "inactive-name"
+            }
+          >
+            {isAuthenticated ? `${firstName} ${lastName}` : "Loading..."}
+          </h2>
+        </div>
         {isEditing ? (
           <form className="form-editing-grid" onSubmit={handleSubmit}>
             <div className="input-wrapper">
@@ -100,7 +110,6 @@ function ProfilComponent() {
                 onChange={handleInputChange}
                 className="custom-input"
               />
-
               <input
                 type="text"
                 name="editedLastName"
@@ -124,12 +133,6 @@ function ProfilComponent() {
           </form>
         ) : (
           <div>
-            <h1>
-              Welcome back
-              <br />
-              {isAuthenticated ? `${firstName} ${lastName}` : "Loading..."}
-            </h1>
-
             <button
               className="edit-button"
               onClick={handleEditClick}

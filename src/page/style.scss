@@ -71,6 +71,9 @@ body {
   width: 200px;
 }
 
+.form-sign-in {
+ 
+}
 .hero {
   background-image: url("../assets/bankTree.jpeg");
   background-position: 0 -50px;
@@ -103,12 +106,49 @@ body {
 .profil-h1 {
   padding-top: 55px;
 }
+
+.inactive-name {
+  display: none;
+}
 .form-editing-grid {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 15px;
 }
+
+
+.input-remember-signin {
+  display: flex;
+}
+
+.input-remember-signin label {
+  margin-left: 0.25rem;
+}
+
+.input-wrapper-signin {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.input-wrapper-sign-in label {
+  font-weight: bold;
+}
+
+.input-wrapper-sign-in input {
+  padding: 5px;
+  font-size: 1.2rem;
+}
+
+
+
+
+
+
+
+
 .input-wrapper {
   display: flex;
   width: 50%;

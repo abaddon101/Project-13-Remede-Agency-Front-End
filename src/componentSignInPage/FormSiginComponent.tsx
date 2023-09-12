@@ -119,21 +119,12 @@ function FormSignin() {
   useEffect(() => {
     const rememberMeValue = localStorage.getItem("rememberMe");
     const storedEmail = localStorage.getItem("email");
-    // const storedFirstName = localStorage.getItem("firstName");
-    // const storedLastName = localStorage.getItem("lastName");
 
-    if (
-      rememberMeValue === "true" &&
-      storedEmail
-      // storedFirstName &&
-      // storedLastName
-    ) {
+    if (rememberMeValue === "true" && storedEmail) {
       setRememberMe(true);
       setFormData({
         ...formData,
         email: storedEmail,
-        // firstName: storedFirstName,
-        // lastName: storedLastName,
       });
     }
   }, []);
@@ -152,10 +143,11 @@ function FormSignin() {
       <section className="sign-in-content">
         <i className="fa fa-user-circle sign-in-icon"></i>
         <h1>Sign In</h1>
-        <form onSubmit={onSubmit}>
-          <div className="input-wrapper">
+        <form className="form-sign-in" onSubmit={onSubmit}>
+          <div className="input-wrapper-signin">
             <label htmlFor="email">email</label>
             <input
+              // className="custom-input"
               type="text"
               id="email"
               name="email"
@@ -164,9 +156,10 @@ function FormSignin() {
               onChange={onChange}
             />
           </div>
-          <div className="input-wrapper">
+          <div className="input-wrapper-signin">
             <label htmlFor="password">Password</label>
             <input
+              // className="custom-input"
               type="password"
               id="password"
               name="password"
@@ -175,7 +168,7 @@ function FormSignin() {
               onChange={onChange}
             />
           </div>
-          <div className="input-remember">
+          <div className="input-remember-signin">
             <input
               type="checkbox"
               id="remember-me"
