@@ -191,6 +191,7 @@ body {
 .save-button {
   background-color: #00bc77;
   color: #fff;
+  margin: 10px;
 }
 
 .cancel-button {
@@ -207,6 +208,14 @@ body {
 }
 
 // Transaction
+
+.account-content-wrapper-transaction-page {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+}
 .horizontal-legend {
   display: flex;
   flex-direction: row;
@@ -394,13 +403,27 @@ body {
 .transaction-button {
   display: block;
   width: 100%;
-  padding: 8px;
+  padding: 12px 0px 12px 0px;
   font-size: 1.1rem;
   font-weight: bold;
   margin-top: 1rem;
   border-color: #00bc77;
   background-color: #00bc77;
+  text-align: center;
+  border-radius: 5px;
   color: #fff;
+  text-decoration: none;
+}
+.editable {
+  input {
+  }
+}
+
+.inactive {
+  input {
+    border: 0;
+    background-color: #f5f5f5;
+  }
 }
 
 @media (min-width: 720px) {
