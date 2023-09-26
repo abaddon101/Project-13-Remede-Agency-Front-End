@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../features/store/store";
 import { fetchUserProfile } from "../features/reducers/authLoginSlice";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function ProfilComponent() {
   const dispatch = useDispatch<AppDispatch>() as any;
@@ -150,7 +151,9 @@ function ProfilComponent() {
             <p className="account-amount-description">Available Balance</p>
           </div>
           <div className="account-content-wrapper cta">
-            <button className="transaction-button">View transactions</button>
+            <Link to="/Transactions" className="transaction-button">
+              View transactions
+            </Link>
           </div>
         </section>
         <section className="account">

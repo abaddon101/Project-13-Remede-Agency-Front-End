@@ -1,7 +1,10 @@
 import React from "react";
+import Account from "../componentTransactionsPage/Account";
 
-function Transactions() {
-  console.log("transaction");
+
+function TransactionsPage() {
+  console.log("transaction page");
+  return <Account />;
 }
 
-export default Transactions;
+export default TransactionsPage;

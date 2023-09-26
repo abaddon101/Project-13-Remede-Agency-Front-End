@@ -1,5 +1,16 @@
 import React from "react";
 
+export interface Transaction {
+  id: number;
+  date: string;
+  description: string;
+  amount: string;
+  balance: string;
+  transType: string;
+  category: string;
+  note: string;
+}
+
 export const transactionsData = [
   {
     id: 1,

@@ -83,8 +83,8 @@ body {
     align-items: center;
     justify-content: space-around;
   }
-svg{}
-
+  svg {
+  }
 }
 
 .hero {
@@ -206,6 +206,50 @@ svg{}
   margin-bottom: 25px;
 }
 
+// Transaction
+.horizontal-legend {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: #f5f5f5;
+  width: 80%;
+  margin: 0 auto;
+  .horizontal-legend-child {
+    width: 25%;
+  }
+}
+.horizontal-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  .horizontal-section-child {
+    width: 25%;
+  }
+}
+
+.vertical-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: start;
+}
+
+.vertical-section-child {
+  align-items: center;
+
+  margin: 10px;
+}
+
+.collapse-transaction {
+  border: 1px solid grey;
+  background-color: #f5f5f5;
+  display: flex;
+  width: 80%;
+  margin: 0 auto;
+  color: black;
+  flex-direction: column;
+}
+
 @media (min-width: 920px) {
   .hero {
     height: 400px;
@@ -282,7 +326,6 @@ svg{}
 
 .sign-in-icon {
   font-size: 5rem;
-
 }
 
 .input-remember {
