@@ -415,11 +415,17 @@ body {
   text-decoration: none;
 }
 .editable {
-  input {
+  svg {
+    display: none;
   }
 }
 
 .inactive {
+  position: relative;
+  svg {
+    position: absolute;
+    right: 105px;
+  }
   input {
     border: 0;
     background-color: #f5f5f5;
