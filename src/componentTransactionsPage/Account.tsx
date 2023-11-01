@@ -9,28 +9,31 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Account() {
+  // Initialize state for transactions and their collapse states
   const [transactions, setTransactions] = useState(transactionsData);
   const [transactionStates, setTransactionStates] = useState(
     transactionsData.map(() => false)
   );
 
-  // Ajoutez un état local pour suivre si le mode d'édition est activé ou désactivé pour chaque transaction
+  // Add local state to track whether the edit mode is enabled or disabled for each transaction
   const [editModes, setEditModes] = useState(transactionsData.map(() => false));
 
+  // Function to toggle the collapse state of a transaction
   const handleToggleCollapse = (transactionId: any) => {
     const updatedTransactionStates = [...transactionStates];
-    updatedTransactionStates[transactionId - 1] =
-      !transactionStates[transactionId - 1];
+    updatedTransactionStates[transactionId - 1] = !transactionStates[transactionId - 1];
     setTransactionStates(updatedTransactionStates);
   };
 
+  // Function to save edits and disable edit mode
   const handleSaveEdit = (transactionId: any) => {
-    // Désactivez le mode d'édition
+    // Disable the edit mode
     const updatedEditModes = [...editModes];
     updatedEditModes[transactionId - 1] = false;
     setEditModes(updatedEditModes);
   };
 
+  // Function to handle input changes for a transaction
   const handleInputChange = (transactionId: any, field: any, value: any) => {
     const updatedTransactions = transactions.map((transaction, index) => {
       if (transaction.id === transactionId) {
@@ -44,11 +47,12 @@ function Account() {
     setTransactions(updatedTransactions);
   };
 
+  // Function to prevent form click from triggering collapse
   const handleFormClick = (e: any) => {
     e.stopPropagation();
   };
 
-  // Fonction de gestionnaire d'événements pour activer/désactiver le mode d'édition
+  // Event handler function to enable/disable edit mode
   const handleEditClick = (transactionId: any) => {
     const updatedEditModes = [...editModes];
     updatedEditModes[transactionId - 1] = !editModes[transactionId - 1];
@@ -110,8 +114,7 @@ function Account() {
                       }`}
                     >
                       <Form.Label>
-                        Category:{" "}
-                        {/* Ajoutez l'icône de crayon et le gestionnaire d'événements */}
+                        Category: {/* Add the pencil icon and event handler */}
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -138,8 +141,7 @@ function Account() {
                       }`}
                     >
                       <Form.Label>
-                        Notes:{" "}
-                        {/* Ajoutez l'icône de crayon et le gestionnaire d'événements */}
+                        Notes: {/* Add the pencil icon and event handler */}
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -160,7 +162,7 @@ function Account() {
                       />
                     </Form.Group>
 
-                    {/* Affichez le bouton "Enregistrer" uniquement si le mode d'édition est activé */}
+                    {/* Display the "Save" button only when edit mode is active */}
                     {editModes[transaction.id - 1] && (
                       <Button className="save-button" onClick={() => handleSaveEdit(transaction.id)}>
                         Enregistrer
