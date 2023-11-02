@@ -63,48 +63,44 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
-// Async action to log out and clear user data
-export const logoutAndClearUserData = createAsyncThunk(
-  "auth/logoutAndClearUserData",
-  async () => {
-    try {
-      // Simulate logout by calling loginAsync with empty values
-      const response = await axios.post(
-        "http://localhost:3001/api/v1/user/login",
-        { email: "", password: "" }
-      );
+// // Async action to log out and clear user data
+// export const logoutAndClearUserData = createAsyncThunk(
+//   "auth/logoutAndClearUserData",
+//   async () => {
+//     try {
+//       // Simulate logout by calling loginAsync with empty values
+//       const response = await axios.post(
+//         "http://localhost:3001/api/v1/user/login",
+//         { email: "", password: "" }
+//       );
 
-      if (response.data.body) {
-        // If the response contains a 'body', assume the logout was successful
-        const { token } = response.data.body;
-        localStorage.setItem("token", token);
+//       if (response.data.body) {
+//         const { token } = response.data.body;
+//         localStorage.setItem("token", token);
 
-        // Use fetchUserProfile to reset user data
-        const profileResponse = await axios.post(
-          "http://localhost:3001/api/v1/user/profile",
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+//         // Use fetchUserProfile to reset user data
+//         const profileResponse = await axios.post(
+//           "http://localhost:3001/api/v1/user/profile",
+//           {},
+//           {
+//             headers: {
+//               Authorization: `Bearer ${token}`,
+//             },
+//           }
+//         );
 
-        if (profileResponse.data) {
-          // If the profile response contains data, update user data in local storage
-          const { firstName, lastName } = profileResponse.data.body;
-          localStorage.setItem("firstName", firstName);
-          localStorage.setItem("lastName", lastName);
-        }
-      }
-    } catch (error) {
-      // Handle and log errors
-      console.error("Error during logout:", error);
-      throw error;
-    }
-  }
-);
-
+//         if (profileResponse.data) {
+//           const { firstName, lastName } = profileResponse.data.body;
+//           localStorage.setItem("firstName", firstName);
+//           localStorage.setItem("lastName", lastName);
+//         }
+//       }
+//     } catch (error) {
+//       console.error("Error during logout:", error);
+//       throw error;
+//     }
+//   }
+// );
 
 // Redux slice for authentication
 export const loginSlice = createSlice({
@@ -122,10 +118,10 @@ export const loginSlice = createSlice({
   },
   // Redux reducers for handling login, success, failure, and logout actions
   reducers: {
-    login: (state, action) => {
-      console.log(state);
-      console.log();
-    },
+    // login: (state, action) => {
+    //   console.log(state);
+    //   console.log();
+    // },
 
     loginSuccess: (state, action) => {
       // console.log("loginSuccess action is dispatched", state);
@@ -137,11 +133,11 @@ export const loginSlice = createSlice({
       state.token = action.payload.token;
       state.userId = action.payload.userId;
     },
-    loginFail: (state, { payload }) => {
-      state.isAuthenticated = false;
-      state.loginSuccess = false;
-      state.error = payload;
-    },
+    // loginFail: (state, { payload }) => {
+    //   state.isAuthenticated = false;
+    //   state.loginSuccess = false;
+    //   state.error = payload;
+    // },
     logout: (state) => {
       // reinitialize values with the initials values
       state.isAuthenticated = false;
@@ -155,28 +151,25 @@ export const loginSlice = createSlice({
       localStorage.removeItem("token");
     },
   },
-// Handle extra reducers for loginAsync, fetchUserProfile, and logoutAndClearUserData
+  // Handle extra reducers for loginAsync, fetchUserProfile, and logoutAndClearUserData
   extraReducers: (builder) => {
     builder.addCase(loginAsync.fulfilled, (state, action) => {
       const { token } = action.payload;
       state.isAuthenticated = true;
       state.token = token;
-      // state.firstName = firstName;
-      // state.lastName = lastName;
     });
 
     builder.addCase(fetchUserProfile.fulfilled, (state, action) => {
       const { firstName, lastName } = action.payload;
       state.firstName = firstName;
       state.lastName = lastName;
-      // You might also want to set other relevant profile data in the state here
     });
-    builder.addCase(logoutAndClearUserData.fulfilled, (state, action) => {
-      // datas reinitialized during logout
-      
-    });
+    // builder.addCase(logoutAndClearUserData.fulfilled, (state, action) => {
+    //   // datas reinitialized during logout
+
+    // });
   },
 });
 
-export const { login, loginSuccess, loginFail, logout } = loginSlice.actions;
+export const { loginSuccess, logout } = loginSlice.actions;
 export default loginSlice.reducer;

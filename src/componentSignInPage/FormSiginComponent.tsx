@@ -2,8 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../features/reducers/authLoginSlice";
-import { loginSuccess } from "../features/reducers/authLoginSlice";
+import { loginSuccess, logout } from "../features/reducers/authLoginSlice";
 import { RootState, AppDispatch } from "../features/store/store";
 import {
   loginAsync,
@@ -13,24 +12,21 @@ import {
 function FormSignin() {
   const dispatch = useDispatch<AppDispatch>() as any;
   const navigate = useNavigate();
-
-  // Use Redux's useSelector to get the isAuthenticated state from the store
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
 
-  // Define and initialize the form data, validation state, login error, and remember me state
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
   const [formIsValid, setFormIsValid] = useState(true);
   const [loginError, setLoginError] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
   const { email, password } = formData;
 
-  // Event handler for input changes
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -38,80 +34,81 @@ function FormSignin() {
     }));
   };
 
-  // Event handler for the "Remember Me" checkbox
   const handleRememberMeChange = () => {
     setRememberMe(!rememberMe);
 
     if (!rememberMe) {
-      // If "Remember Me" is checked, store information in localStorage
+      // Si la case "Remember Me" est cochée, stockez l'information dans le localStorage
       localStorage.setItem("rememberMe", "true");
       localStorage.setItem("email", email);
     } else {
-      // If "Remember Me" is unchecked, remove information from localStorage
+      // Si la case "Remember Me" est décochée, supprimez l'information du localStorage
       localStorage.removeItem("rememberMe");
-      localStorage.removeItem("email");
+      localStorage.removeItem("email"); // Supprimez également l'e-mail
     }
   };
 
-  // Event handler for form submission
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Perform validation checks
     if (!email || !password) {
-      console.log("Please fill in all fields.");
+      console.log("Veuillez remplir tous les champs.");
       setFormIsValid(false);
       return;
     }
 
-    // Check email validity using a regular expression
+    // Vérification de l'e-mail à l'aide d'une expression régulière
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      console.log("Please enter a valid email address.");
+      console.log("Veuillez entrer une adresse e-mail valide.");
       setFormIsValid(false);
       return;
     }
 
     try {
       setFormIsValid(true);
+      const loginResponse = await dispatch(loginAsync({ email, password })); // Appel à l'API via redux
+      // console.log("Login Response:", loginResponse.payload);
 
-      // Call the loginAsync function from the Redux store to perform login
-      const loginResponse = await dispatch(loginAsync({ email, password }));
-
-      // Check if authentication was successful
+      // Vérifier si l'authentification a réussi ou non en vérifiant la réponse de l'API
       if (loginResponse.payload && loginResponse.payload.error) {
         console.log("Authentication Error:", loginResponse.payload.error);
-        console.log("Login failed. Please check your email and password.");
-        setLoginError("Login failed. Please check your email and password.");
+        // Authentification échouée, afficher l'erreur
+        console.log(
+          "La connexion a échoué. Veuillez vérifier votre email et mot de passe."
+        );
+        setLoginError(
+          "La connexion a échoué. Veuillez vérifier votre email et mot de passe."
+        );
         setFormIsValid(false);
       } else {
-        // If authentication was successful, store user information in localStorage
         const token = localStorage.getItem("token") ?? "";
 
-        // Call fetchUserProfile to get user profile data
+        // Appel à fetchUserProfile pour obtenir les données du profil
         const profileResponse = await dispatch(fetchUserProfile(token));
-
+        // Stocker les données dans le localStorage
         localStorage.setItem("firstName", profileResponse.firstName);
         localStorage.setItem("lastName", profileResponse.lastName);
-
-        // Dispatch the loginSuccess action with user data and redirect to the profile page
+        // console.log("Profile Response:", profileResponse);
+        // Authentification réussie, redirige l'utilisateur vers la page de profil
         dispatch(
           loginSuccess({
             token: loginResponse.payload.token,
-            userId: profileResponse.payload.userId,
+            userId: profileResponse.payload.userId, // Ajouter l'userId
             firstName: profileResponse.payload.firstName,
             lastName: profileResponse.payload.lastName,
           })
         );
-
+        console.log(loginResponse.payload);
+        // Dispatch de l'action loginSuccess avec les données de l'utilisateur
         navigate(`/profil/`);
       }
     } catch (error) {
+      // Gérer les erreurs ici
       console.log("Error in onSubmit:", error);
     }
   };
-
-  // useEffect to check if "Remember Me" is checked and populate the email field
   useEffect(() => {
     const rememberMeValue = localStorage.getItem("rememberMe");
     const storedEmail = localStorage.getItem("email");
@@ -125,10 +122,9 @@ function FormSignin() {
     }
   }, []);
 
-  // useEffect to check if the user is already authenticated and redirect to the profile page
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/profil");
+      navigate("/profil"); // Redirige l'utilisateur vers la page de profil s'il est déjà connecté
     }
   }, [isAuthenticated, navigate]);
 
