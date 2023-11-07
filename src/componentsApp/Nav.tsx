@@ -13,18 +13,15 @@ import { logout } from "../features/reducers/authLoginSlice";
 // import { logoutAndClearUserData } from "../features/reducers/authLoginSlice";
 
 function Navigation() {
-  // Using useSelector to access data from the Redux store
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
   const firstName = useSelector((state: RootState) => state.auth.firstName);
   const lastName = useSelector((state: RootState) => state.auth.lastName);
-
+  // console.log("isAuthenticated:", isAuthenticated);
   const dispatch = useDispatch<AppDispatch>() as any;
-
-  // Handler function for signing out
   const handleSignOut = () => {
-    // Dispatch the "logout" action to log the user out
+    // Dispatchez l'action de déconnexion
     dispatch(logout());
   };
 
@@ -40,24 +37,20 @@ function Navigation() {
       </Link>
       <div className="LinksInAndOut">
         {isAuthenticated ? (
-          // Render content for authenticated users
           <div className="LinksInAndOut-first-child">
             <h3>
-              {/* Display user's first name */}
               <FontAwesomeIcon width={45} icon={faUserCircle} />
               {firstName}
             </h3>
             <Link to="/" onClick={handleSignOut} className="main-nav-item">
-              {/* Sign out button */}
               <FontAwesomeIcon width={45} icon={faSignOut} />
               Sign Out
             </Link>
           </div>
         ) : (
-          // Render content for non-authenticated users
           <div className="LinksInAndOut-second-child">
             <h3>
-              {/* Link to the sign-in page */}
+              {" "}
               <Link to="/signin" className="main-nav-item">
                 <FontAwesomeIcon width={45} icon={faSignIn} />
                 Sign In

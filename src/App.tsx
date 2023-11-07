@@ -6,6 +6,7 @@ import Home from "./page/Home";
 import Signin from "./page/Signin";
 import Profil from "./page/Profil";
 import Transactions from "./page/Transactions";
+
 import "./page/style.scss";
 
 function App() {

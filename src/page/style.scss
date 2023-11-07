@@ -18,7 +18,7 @@ body {
 }
 
 .bg-dark {
-  background-color: #12002b;
+  background-color: #76767712;
   min-height: 100vh;
 }
 
@@ -118,10 +118,14 @@ body {
 }
 .profil-h1 {
   padding-top: 55px;
+  color: black;
 }
 
 .inactive-name {
   display: none;
+}
+.active-name {
+  color: black;
 }
 .form-editing-grid {
   display: flex;
@@ -169,7 +173,7 @@ body {
     padding: 5px;
     font-size: 1.2rem;
     border: 1px solid #ccc;
-    background-color: #f5f5f5;
+    background-color: white;
     color: #777; /* Couleur de police grise */
   }
 }
@@ -181,40 +185,56 @@ body {
   justify-content: center;
   gap: 15px;
 }
-.cancel-button,
+
 .save-button {
-  font-weight: bold;
-  padding: 5px;
-  width: 95px;
-  cursor: pointer;
-}
-.save-button {
-  background-color: #00bc77;
-  color: #fff;
+  background-color: white;
+  color: rgba(106, 17, 215, 0.59);
+  border: 1px solid rgba(106, 17, 215, 0.59);
+  border-radius: 3px;
   margin: 10px;
+  font-weight: bold;
+  padding: 10px 35px 10px 35px;
+  width: 125px;
+  cursor: pointer;
 }
 
 .cancel-button {
-  background-color: #ff6b6b; /* Exemple de couleur pour le bouton "Cancel" */
-  color: #fff;
+  background-color: white;
+  color: rgba(106, 17, 215, 0.59);
+  border: 1px solid rgba(106, 17, 215, 0.59);
+  border-radius: 3px;
+  margin: 10px;
+  font-weight: bold;
+  padding: 10px 35px 10px 35px;
+  width: 125px;
+  cursor: pointer;
 }
 
 .edit-button {
-  background-color: #00bc77;
+  color: rgba(106, 17, 215, 0.59);
+  border: 1px solid rgba(106, 17, 215, 0.59);
+  background-color: rgba(106, 17, 215, 0.59);
   padding: 5px;
+  font-weight: bold;
   width: 95px;
-  color: #fff;
+ color: white;
   margin-bottom: 25px;
+  border-radius: 3px;
+  border: 0px;
+  padding: 10px 10px 10px 10px;
 }
 
 // Transaction
 
 .account-content-wrapper-transaction-page {
-  width: 90%;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   padding: 25px;
+  color: black;
+  border: 1px solid #dbd0d0;
+  background-color: white;
 }
 .horizontal-legend {
   display: flex;
@@ -250,8 +270,8 @@ body {
 }
 
 .collapse-transaction {
-  border: 1px solid grey;
-  background-color: #f5f5f5;
+  border: 1px solid #dbd0d0;
+  background-color: white;
   display: flex;
   width: 80%;
   margin: 0 auto;
@@ -319,9 +339,11 @@ body {
   font-size: 1.1rem;
   font-weight: bold;
   margin-top: 1rem;
-  border-color: #00bc77;
-  background-color: #00bc77;
+  border-color: rgba(106, 17, 215, 0.59);
+  background-color: rgba(106, 17, 215, 0.59);
+  border-radius: 3px;
   color: #fff;
+  border: 0px;
 }
 
 .sign-in-content {
@@ -361,7 +383,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid black;
+  border: 1px solid rgb(201, 197, 197);
   background-color: #fff;
   color: black;
   width: 80%;
@@ -407,8 +429,8 @@ body {
   font-size: 1.1rem;
   font-weight: bold;
   margin-top: 1rem;
-  border-color: #00bc77;
-  background-color: #00bc77;
+  border-color: rgba(106, 17, 215, 0.59);
+  background-color: rgba(106, 17, 215, 0.59);
   text-align: center;
   border-radius: 5px;
   color: #fff;

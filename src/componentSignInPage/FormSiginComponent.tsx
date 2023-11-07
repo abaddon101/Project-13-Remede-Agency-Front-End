@@ -2,7 +2,8 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginSuccess, logout } from "../features/reducers/authLoginSlice";
+// import { login } from "../features/reducers/authLoginSlice";
+import { loginSuccess } from "../features/reducers/authLoginSlice";
 import { RootState, AppDispatch } from "../features/store/store";
 import {
   loginAsync,
@@ -41,6 +42,8 @@ function FormSignin() {
       // Si la case "Remember Me" est cochée, stockez l'information dans le localStorage
       localStorage.setItem("rememberMe", "true");
       localStorage.setItem("email", email);
+
+      // Stockez également l'e-mail
     } else {
       // Si la case "Remember Me" est décochée, supprimez l'information du localStorage
       localStorage.removeItem("rememberMe");
@@ -53,7 +56,7 @@ function FormSignin() {
 
     // Perform validation checks
     if (!email || !password) {
-      console.log("Veuillez remplir tous les champs.");
+      // console.log("Veuillez remplir tous les champs.");
       setFormIsValid(false);
       return;
     }
@@ -61,7 +64,7 @@ function FormSignin() {
     // Vérification de l'e-mail à l'aide d'une expression régulière
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      console.log("Veuillez entrer une adresse e-mail valide.");
+      // console.log("Veuillez entrer une adresse e-mail valide.");
       setFormIsValid(false);
       return;
     }
@@ -73,17 +76,19 @@ function FormSignin() {
 
       // Vérifier si l'authentification a réussi ou non en vérifiant la réponse de l'API
       if (loginResponse.payload && loginResponse.payload.error) {
-        console.log("Authentication Error:", loginResponse.payload.error);
+        // console.log("Authentication Error:", loginResponse.payload.error);
         // Authentification échouée, afficher l'erreur
-        console.log(
-          "La connexion a échoué. Veuillez vérifier votre email et mot de passe."
-        );
+        // console.log(
+          // "La connexion a échoué. Veuillez vérifier votre email et mot de passe."
+        // );
         setLoginError(
           "La connexion a échoué. Veuillez vérifier votre email et mot de passe."
         );
         setFormIsValid(false);
       } else {
         const token = localStorage.getItem("token") ?? "";
+
+        // console.log("Profile Response Token:", token);
 
         // Appel à fetchUserProfile pour obtenir les données du profil
         const profileResponse = await dispatch(fetchUserProfile(token));
@@ -100,13 +105,15 @@ function FormSignin() {
             lastName: profileResponse.payload.lastName,
           })
         );
-        console.log(loginResponse.payload);
+
+        // console.log(loginResponse.payload);
+
         // Dispatch de l'action loginSuccess avec les données de l'utilisateur
         navigate(`/profil/`);
       }
     } catch (error) {
       // Gérer les erreurs ici
-      console.log("Error in onSubmit:", error);
+      // console.log("Error in onSubmit:", error);
     }
   };
   useEffect(() => {
@@ -128,8 +135,8 @@ function FormSignin() {
     }
   }, [isAuthenticated, navigate]);
 
-  console.log("isAuthenticated:", isAuthenticated);
-  console.log("rememberMe:", rememberMe);
+  // console.log("isAuthenticated:", isAuthenticated);
+  // console.log("rememberMe:", rememberMe);
 
   return (
     <main className="main bg-dark">

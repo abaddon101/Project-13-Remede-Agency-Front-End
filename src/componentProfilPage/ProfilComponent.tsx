@@ -6,7 +6,6 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 function ProfilComponent() {
-  // Get the Redux dispatch function and some state variables using useSelector
   const dispatch = useDispatch<AppDispatch>() as any;
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
@@ -19,24 +18,20 @@ function ProfilComponent() {
   const lastName = useSelector((state: RootState) => state.auth.lastName);
   const token = useSelector((state: RootState) => state.auth.token);
 
-  // Function to handle the "Edit" button click
   const handleEditClick = () => {
     console.log("Edit button clicked");
     setIsEditing(true);
     setIsEditButtonEnabled(false);
   };
-
-  // Function to handle the "Cancel" button click
   const handleCancelClick = () => {
-    // Reset the edited fields to the current values of firstName and lastName
+    // Réinitialiser les champs édités aux valeurs actuelles de firstName et lastName
     setEditedFirstName(firstName);
     setEditedLastName(lastName);
 
-    // Disable the edit mode
+    // Désactiver le mode d'édition
     setIsEditing(false);
   };
 
-  // Function to handle input changes in the edited first name and last name fields
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === "editedFirstName") {
       setEditedFirstName(e.target.value);
@@ -45,18 +40,17 @@ function ProfilComponent() {
     }
   };
 
-  // Function to handle the form submission when saving the edited profile
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Send a request to the Swagger API to update the name
+    // Envoyer une requête à l'API Swagger pour mettre à jour le nom
     try {
       const updatedData = {
         firstName: editedFirstName,
         lastName: editedLastName,
       };
 
-      // Send the update request with the authentication token
+      // Envoyer la requête de mise à jour avec le token d'authentification
       const response = await axios.put(
         "http://localhost:3001/api/v1/user/profile",
         updatedData,
@@ -67,35 +61,33 @@ function ProfilComponent() {
         }
       );
 
-      // Check the API response and update the name locally if the update is successful
+      // Vérifier la réponse de l'API et mettre à jour le nom localement si la modification réussit
       if (response.status === 200) {
-        // Update the local profile data
-        dispatch(fetchUserProfile(token)); // This should update firstName and lastName in the Redux store
+        // Mise à jour locale des données du profil
+        dispatch(fetchUserProfile(token)); // Cela devrait mettre à jour firstName et lastName dans le Redux store
 
-        // Also, reset the values in the localStorage
+        // Réinitialisez également les valeurs dans le localStorage
         localStorage.setItem("firstName", editedFirstName);
         localStorage.setItem("lastName", editedLastName);
 
-        // Disable the edit mode
+        // Désactiver le mode d'édition
         setIsEditing(false);
-
-        // Add console.log statements for debugging
+        // Ajoutez des déclarations console.log pour le débogage
         console.log(
           "LocalStorage firstName:",
           localStorage.getItem("firstName")
         );
         console.log("LocalStorage lastName:", localStorage.getItem("lastName"));
       } else {
-        // Handle update errors here
+        // Gérer les erreurs de modification ici
         console.error("Error updating profile:", response);
       }
     } catch (error) {
-      // Handle exception errors here
+      // Gérer les erreurs d'exception ici
       console.error("Error updating profile:", error);
     }
   };
 
-  // Render the user profile interface
   return (
     <main className="main bg-dark">
       <div className="header">
